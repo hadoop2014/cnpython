@@ -1163,6 +1163,14 @@ ast_for_comp_op(struct compiling *c, const node *n)
                     return In;
                 if (strcmp(STR(n), "is") == 0)
                     return Is;
+                if (strcmp(STR(n), "在") == 0)
+                    return In;
+                if (strcmp(STR(n), "为") == 0)
+                    return Is;
+                if (strcmp(STR(n), "不在") == 0)
+                    return NotIn;
+                if (strcmp(STR(n), "不为") == 0)
+                    return IsNot;
                 /* fall through */
             default:
                 PyErr_Format(PyExc_SystemError, "invalid comp_op: %s",
@@ -4188,8 +4196,8 @@ decode_unicode_with_escapes(struct compiling *c, const node *n, const char *s,
     /* check for integer overflow */
     if (len > SIZE_MAX / 6)
         return NULL;
-    /* "ä" (2 bytes) may become "\U000000E4" (10 bytes), or 1:5
-       "\ä" (3 bytes) may become "\u005c\U000000E4" (16 bytes), or ~1:6 */
+    /* "盲" (2 bytes) may become "\U000000E4" (10 bytes), or 1:5
+       "\盲" (3 bytes) may become "\u005c\U000000E4" (16 bytes), or ~1:6 */
     u = PyBytes_FromStringAndSize((char *)NULL, len * 6);
     if (u == NULL)
         return NULL;

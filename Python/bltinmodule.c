@@ -2645,21 +2645,31 @@ static PyMethodDef builtin_methods[] = {
      METH_FASTCALL | METH_KEYWORDS, build_class_doc},
     {"__import__",      (PyCFunction)builtin___import__, METH_VARARGS | METH_KEYWORDS, import_doc},
     BUILTIN_ABS_METHODDEF
+    {"绝对值", (PyCFunction)builtin_abs, METH_O, builtin_abs__doc__},
     BUILTIN_ALL_METHODDEF
+    {"全", (PyCFunction)builtin_all, METH_O, builtin_all__doc__},
     BUILTIN_ANY_METHODDEF
+    {"任意", (PyCFunction)builtin_any, METH_O, builtin_any__doc__},
     BUILTIN_ASCII_METHODDEF
     BUILTIN_BIN_METHODDEF
+    {"二", (PyCFunction)builtin_bin, METH_O, builtin_bin__doc__},
     {"breakpoint",      (PyCFunction)builtin_breakpoint, METH_FASTCALL | METH_KEYWORDS, breakpoint_doc},
+    {"断点",      (PyCFunction)builtin_breakpoint, METH_FASTCALL | METH_KEYWORDS, breakpoint_doc},
     BUILTIN_CALLABLE_METHODDEF
     BUILTIN_CHR_METHODDEF
+    {"符", (PyCFunction)builtin_chr, METH_O, builtin_chr__doc__},
     BUILTIN_COMPILE_METHODDEF
     BUILTIN_DELATTR_METHODDEF
     {"dir",             builtin_dir,        METH_VARARGS, dir_doc},
+    {"目录",             builtin_dir,        METH_VARARGS, dir_doc},
     BUILTIN_DIVMOD_METHODDEF
     BUILTIN_EVAL_METHODDEF
+    {"估", (PyCFunction)builtin_eval, METH_FASTCALL, builtin_eval__doc__},
     BUILTIN_EXEC_METHODDEF
     BUILTIN_FORMAT_METHODDEF
+    {"格式化", (PyCFunction)builtin_format, METH_FASTCALL, builtin_format__doc__},
     {"getattr",         (PyCFunction)builtin_getattr, METH_FASTCALL, getattr_doc},
+    {"取属性",         (PyCFunction)builtin_getattr, METH_FASTCALL, getattr_doc},
     BUILTIN_GLOBALS_METHODDEF
     BUILTIN_HASATTR_METHODDEF
     BUILTIN_HASH_METHODDEF
@@ -2669,21 +2679,36 @@ static PyMethodDef builtin_methods[] = {
     BUILTIN_ISINSTANCE_METHODDEF
     BUILTIN_ISSUBCLASS_METHODDEF
     {"iter",            builtin_iter,       METH_VARARGS, iter_doc},
+    {"迭",            builtin_iter,       METH_VARARGS, iter_doc},
     BUILTIN_LEN_METHODDEF
+    {"长", (PyCFunction)builtin_len, METH_O, builtin_len__doc__},
     BUILTIN_LOCALS_METHODDEF
     {"max",             (PyCFunction)builtin_max,        METH_VARARGS | METH_KEYWORDS, max_doc},
+    {"最大",             (PyCFunction)builtin_max,        METH_VARARGS | METH_KEYWORDS, max_doc},
     {"min",             (PyCFunction)builtin_min,        METH_VARARGS | METH_KEYWORDS, min_doc},
+    {"最小",             (PyCFunction)builtin_min,        METH_VARARGS | METH_KEYWORDS, min_doc},
     {"next",            (PyCFunction)builtin_next,       METH_FASTCALL, next_doc},
+    {"下个",            (PyCFunction)builtin_next,       METH_FASTCALL, next_doc},
     BUILTIN_OCT_METHODDEF
+    {"八", (PyCFunction)builtin_oct, METH_O, builtin_oct__doc__},
     BUILTIN_ORD_METHODDEF
+    {"号", (PyCFunction)builtin_ord, METH_O, builtin_ord__doc__},
     BUILTIN_POW_METHODDEF
+    {"幂", (PyCFunction)builtin_pow, METH_FASTCALL, builtin_pow__doc__},
     {"print",           (PyCFunction)builtin_print,      METH_FASTCALL | METH_KEYWORDS, print_doc},
+    {"打印",           (PyCFunction)builtin_print,      METH_FASTCALL | METH_KEYWORDS, print_doc},
     BUILTIN_REPR_METHODDEF
+    {"陈述", (PyCFunction)builtin_repr, METH_O, builtin_repr__doc__},
     {"round",           (PyCFunction)builtin_round,      METH_VARARGS | METH_KEYWORDS, round_doc},
+    {"舍入",           (PyCFunction)builtin_round,      METH_VARARGS | METH_KEYWORDS, round_doc},
     BUILTIN_SETATTR_METHODDEF
+    {"置属性", (PyCFunction)builtin_setattr, METH_FASTCALL, builtin_setattr__doc__},
     BUILTIN_SORTED_METHODDEF
+    {"排", (PyCFunction)builtin_sorted, METH_FASTCALL | METH_KEYWORDS, builtin_sorted__doc__},
     BUILTIN_SUM_METHODDEF
+    {"和", (PyCFunction)builtin_sum, METH_FASTCALL, builtin_sum__doc__},
     {"vars",            builtin_vars,       METH_VARARGS, vars_doc},
+    {"正文",            builtin_vars,       METH_VARARGS, vars_doc},
     {NULL,              NULL},
 };
 

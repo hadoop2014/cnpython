@@ -16,8 +16,8 @@ decorator: '@' dotted_name [ '(' [arglist] ')' ] NEWLINE
 decorators: decorator+
 decorated: decorators (classdef | funcdef | async_funcdef)
 
-async_funcdef: 'async' funcdef
-funcdef: 'def' NAME parameters ['->' test] ':' suite
+async_funcdef: ('async'|'async_cn') funcdef
+funcdef: ('def'|'def_cn') NAME parameters ['->' test] ':' suite
 
 parameters: '(' [typedargslist] ')'
 typedargslist: (tfpdef ['=' test] (',' tfpdef ['=' test])* [',' [
@@ -45,55 +45,55 @@ testlist_star_expr: (test|star_expr) (',' (test|star_expr))* [',']
 augassign: ('+=' | '-=' | '*=' | '@=' | '/=' | '%=' | '&=' | '|=' | '^=' |
             '<<=' | '>>=' | '**=' | '//=')
 # For normal and annotated assignments, additional restrictions enforced by the interpreter
-del_stmt: 'del' exprlist
-pass_stmt: 'pass'
+del_stmt: ('del'|'del_cn') exprlist
+pass_stmt: ('pass'|'pass_cn')
 flow_stmt: break_stmt | continue_stmt | return_stmt | raise_stmt | yield_stmt
-break_stmt: 'break'
-continue_stmt: 'continue'
-return_stmt: 'return' [testlist]
+break_stmt: ('break'|'break_cn')
+continue_stmt: ('continue'|'continue_cn')
+return_stmt: ('return'|'return_cn') [testlist]
 yield_stmt: yield_expr
-raise_stmt: 'raise' [test ['from' test]]
+raise_stmt: ('raise'|'raise_cn') [test [('from'|'from_cn') test]]
 import_stmt: import_name | import_from
-import_name: 'import' dotted_as_names
+import_name: ('import'|'import_cn') dotted_as_names
 # note below: the ('.' | '...') is necessary because '...' is tokenized as ELLIPSIS
-import_from: ('from' (('.' | '...')* dotted_name | ('.' | '...')+)
-              'import' ('*' | '(' import_as_names ')' | import_as_names))
-import_as_name: NAME ['as' NAME]
-dotted_as_name: dotted_name ['as' NAME]
+import_from: (('from'|'from_cn') (('.' | '...')* dotted_name | ('.' | '...')+)
+              ('import'|'import_cn') ('*' | '(' import_as_names ')' | import_as_names))
+import_as_name: NAME [('as'|'as_cn') NAME]
+dotted_as_name: dotted_name [('as'|'as_cn') NAME]
 import_as_names: import_as_name (',' import_as_name)* [',']
 dotted_as_names: dotted_as_name (',' dotted_as_name)*
 dotted_name: NAME ('.' NAME)*
-global_stmt: 'global' NAME (',' NAME)*
-nonlocal_stmt: 'nonlocal' NAME (',' NAME)*
-assert_stmt: 'assert' test [',' test]
+global_stmt: ('global'|'global_cn') NAME (',' NAME)*
+nonlocal_stmt: ('nonlocal'|'nonlocal_cn') NAME (',' NAME)*
+assert_stmt: ('assert'|'assert_cn') test [',' test]
 
 compound_stmt: if_stmt | while_stmt | for_stmt | try_stmt | with_stmt | funcdef | classdef | decorated | async_stmt
-async_stmt: 'async' (funcdef | with_stmt | for_stmt)
-if_stmt: 'if' test ':' suite ('elif' test ':' suite)* ['else' ':' suite]
-while_stmt: 'while' test ':' suite ['else' ':' suite]
-for_stmt: 'for' exprlist 'in' testlist ':' suite ['else' ':' suite]
-try_stmt: ('try' ':' suite
+async_stmt: ('async'|'async_cn') (funcdef | with_stmt | for_stmt)
+if_stmt: ('if'|'if_cn') test ':' suite (('elif'|'elif_cn') test ':' suite)* [('else'|'else_cn') ':' suite]
+while_stmt: ('while'|'while_cn') test ':' suite [('else'|'else_cn') ':' suite]
+for_stmt: ('for'|'for_cn') exprlist ('in'|'in_cn') testlist ':' suite [('else'|'else_cn') ':' suite]
+try_stmt: (('try'|'try_cn') ':' suite
            ((except_clause ':' suite)+
-            ['else' ':' suite]
-            ['finally' ':' suite] |
-           'finally' ':' suite))
-with_stmt: 'with' with_item (',' with_item)*  ':' suite
-with_item: test ['as' expr]
+            [('else'|'else_cn') ':' suite]
+            [('finally'|'finally_cn') ':' suite] |
+           ('finally'|'finally_cn') ':' suite))
+with_stmt: ('with'|'with_cn') with_item (',' with_item)*  ':' suite
+with_item: test [('as'|'as_cn') expr]
 # NB compile.c makes sure that the default except clause is last
-except_clause: 'except' [test ['as' NAME]]
+except_clause: ('except'|'except_cn') [test [('as'|'as_cn') NAME]]
 suite: simple_stmt | NEWLINE INDENT stmt+ DEDENT
 
-test: or_test ['if' or_test 'else' test] | lambdef
+test: or_test [('if'|'if_cn') or_test ('else'|'else_cn') test] | lambdef
 test_nocond: or_test | lambdef_nocond
-lambdef: 'lambda' [varargslist] ':' test
-lambdef_nocond: 'lambda' [varargslist] ':' test_nocond
-or_test: and_test ('or' and_test)*
-and_test: not_test ('and' not_test)*
-not_test: 'not' not_test | comparison
+lambdef: ('lambda'|'lambda_cn') [varargslist] ':' test
+lambdef_nocond: ('lambda'|'lambda_cn') [varargslist] ':' test_nocond
+or_test: and_test (('or'|'or_cn') and_test)*
+and_test: not_test (('and'|'and_cn') not_test)*
+not_test: ('not'|'not_cn') not_test | comparison
 comparison: expr (comp_op expr)*
 # <> isn't actually a valid comparison operator in Python. It's here for the
 # sake of a __future__ import described in PEP 401 (which really works :-)
-comp_op: '<'|'>'|'=='|'>='|'<='|'<>'|'!='|'in'|'not' 'in'|'is'|'is' 'not'
+comp_op: '<'|'>'|'=='|'>='|'<='|'<>'|'!='|('in'|'in_cn')|('not' 'in'|'not_in_cn')|('is'|'is_cn')|('is' 'not'|'is_not_cn')
 star_expr: '*' expr
 expr: xor_expr ('|' xor_expr)*
 xor_expr: and_expr ('^' and_expr)*
@@ -103,11 +103,11 @@ arith_expr: term (('+'|'-') term)*
 term: factor (('*'|'@'|'/'|'%'|'//') factor)*
 factor: ('+'|'-'|'~') factor | power
 power: atom_expr ['**' factor]
-atom_expr: ['await'] atom trailer*
+atom_expr: [('await'|'await_cn')] atom trailer*
 atom: ('(' [yield_expr|testlist_comp] ')' |
        '[' [testlist_comp] ']' |
        '{' [dictorsetmaker] '}' |
-       NAME | NUMBER | STRING+ | '...' | 'None' | 'True' | 'False')
+       NAME | NUMBER | STRING+ | '...' | ('None'|'None_cn') | ('True'|'True_cn') | ('False'|'False_cn'))
 testlist_comp: (test|star_expr) ( comp_for | (',' (test|star_expr))* [','] )
 trailer: '(' [arglist] ')' | '[' subscriptlist ']' | '.' NAME
 subscriptlist: subscript (',' subscript)* [',']
@@ -120,7 +120,7 @@ dictorsetmaker: ( ((test ':' test | '**' expr)
                   ((test | star_expr)
                    (comp_for | (',' (test | star_expr))* [','])) )
 
-classdef: 'class' NAME ['(' [arglist] ')'] ':' suite
+classdef: ('class'|'class_cn') NAME ['(' [arglist] ')'] ':' suite
 
 arglist: argument (',' argument)*  [',']
 
@@ -139,12 +139,12 @@ argument: ( test [comp_for] |
             '*' test )
 
 comp_iter: comp_for | comp_if
-sync_comp_for: 'for' exprlist 'in' or_test [comp_iter]
-comp_for: ['async'] sync_comp_for
-comp_if: 'if' test_nocond [comp_iter]
+sync_comp_for: ('for'|'for_cn') exprlist ('in'|'in_cn') or_test [comp_iter]
+comp_for: [('async'|'async_cn')] sync_comp_for
+comp_if: ('if'|'if_cn') test_nocond [comp_iter]
 
 # not used in grammar, but may appear in "node" passed from Parser to Compiler
 encoding_decl: NAME
 
-yield_expr: 'yield' [yield_arg]
-yield_arg: 'from' test | testlist
+yield_expr: ('yield'|'yield_cn') [yield_arg]
+yield_arg: ('from'|'from_cn') test | testlist
