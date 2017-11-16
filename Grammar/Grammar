@@ -16,8 +16,8 @@ decorator: '@' dotted_name [ '(' [arglist] ')' ] NEWLINE
 decorators: decorator+
 decorated: decorators (classdef | funcdef | async_funcdef)
 
-async_funcdef: ('async'|'async_cn') funcdef
-funcdef: ('def'|'def_cn') NAME parameters ['->' test] ':' suite
+async_funcdef: ('async'|异步) funcdef
+funcdef: ('def'|设) NAME parameters ['->' test] ':' suite
 
 parameters: '(' [typedargslist] ')'
 typedargslist: (tfpdef ['=' test] (',' tfpdef ['=' test])* [',' [
@@ -45,55 +45,56 @@ testlist_star_expr: (test|star_expr) (',' (test|star_expr))* [',']
 augassign: ('+=' | '-=' | '*=' | '@=' | '/=' | '%=' | '&=' | '|=' | '^=' |
             '<<=' | '>>=' | '**=' | '//=')
 # For normal and annotated assignments, additional restrictions enforced by the interpreter
-del_stmt: ('del'|'del_cn') exprlist
-pass_stmt: ('pass'|'pass_cn')
+del_stmt: ('del'|删) exprlist
+pass_stmt: ('pass'|过)
 flow_stmt: break_stmt | continue_stmt | return_stmt | raise_stmt | yield_stmt
-break_stmt: ('break'|'break_cn')
-continue_stmt: ('continue'|'continue_cn')
-return_stmt: ('return'|'return_cn') [testlist]
+break_stmt: ('break'|断)
+continue_stmt: ('continue'|续)
+return_stmt: ('return'|回) [testlist]
 yield_stmt: yield_expr
-raise_stmt: ('raise'|'raise_cn') [test [('from'|'from_cn') test]]
+raise_stmt: ('raise'|升) [test [('from'|从) test]]
 import_stmt: import_name | import_from
-import_name: ('import'|'import_cn') dotted_as_names
+import_name: ('import'|导入) dotted_as_names
 # note below: the ('.' | '...') is necessary because '...' is tokenized as ELLIPSIS
-import_from: (('from'|'from_cn') (('.' | '...')* dotted_name | ('.' | '...')+)
-              ('import'|'import_cn') ('*' | '(' import_as_names ')' | import_as_names))
-import_as_name: NAME [('as'|'as_cn') NAME]
-dotted_as_name: dotted_name [('as'|'as_cn') NAME]
+import_from: (('from'|从) (('.' | '...')* dotted_name | ('.' | '...')+)
+              ('import'|导入) ('*' | '(' import_as_names ')' | import_as_names))
+import_as_name: NAME [('as'|作) NAME]
+dotted_as_name: dotted_name [('as'|作) NAME]
 import_as_names: import_as_name (',' import_as_name)* [',']
 dotted_as_names: dotted_as_name (',' dotted_as_name)*
 dotted_name: NAME ('.' NAME)*
-global_stmt: ('global'|'global_cn') NAME (',' NAME)*
-nonlocal_stmt: ('nonlocal'|'nonlocal_cn') NAME (',' NAME)*
-assert_stmt: ('assert'|'assert_cn') test [',' test]
+global_stmt: ('global'|全局) NAME (',' NAME)*
+nonlocal_stmt: ('nonlocal'|非局部) NAME (',' NAME)*
+assert_stmt: ('assert'|断言) test [',' test]
 
-compound_stmt: if_stmt | while_stmt | for_stmt | try_stmt | with_stmt | funcdef | classdef | decorated | async_stmt
-async_stmt: ('async'|'async_cn') (funcdef | with_stmt | for_stmt)
-if_stmt: ('if'|'if_cn') test ':' suite (('elif'|'elif_cn') test ':' suite)* [('else'|'else_cn') ':' suite]
-while_stmt: ('while'|'while_cn') test ':' suite [('else'|'else_cn') ':' suite]
-for_stmt: ('for'|'for_cn') exprlist ('in'|'in_cn') testlist ':' suite [('else'|'else_cn') ':' suite]
-try_stmt: (('try'|'try_cn') ':' suite
+compound_stmt: if_stmt | while_stmt | until_stmt | for_stmt | try_stmt | with_stmt | funcdef | classdef | decorated | async_stmt
+async_stmt: ('async'|异步) (funcdef | with_stmt | for_stmt)
+if_stmt: ('if'|如) test ':' suite (('elif'|另如) test ':' suite)* [('else'|另) ':' suite]
+while_stmt: ('while'|当) test ':' suite [('else'|另) ':' suite]
+until_stmt: ('until'|到) test ':' suite [('else'|另) ':' suite]
+for_stmt: ('for'|凡) exprlist ('in'|在) testlist ':' suite [('else'|另) ':' suite]
+try_stmt: (('try'|试) ':' suite
            ((except_clause ':' suite)+
-            [('else'|'else_cn') ':' suite]
-            [('finally'|'finally_cn') ':' suite] |
-           ('finally'|'finally_cn') ':' suite))
-with_stmt: ('with'|'with_cn') with_item (',' with_item)*  ':' suite
-with_item: test [('as'|'as_cn') expr]
+            [('else'|另) ':' suite]
+            [('finally'|终) ':' suite] |
+           ('finally'|终) ':' suite))
+with_stmt: ('with'|对) with_item (',' with_item)*  ':' suite
+with_item: test [('as'|作) expr]
 # NB compile.c makes sure that the default except clause is last
-except_clause: ('except'|'except_cn') [test [('as'|'as_cn') NAME]]
+except_clause: ('except'|除) [test [('as'|作) NAME]]
 suite: simple_stmt | NEWLINE INDENT stmt+ DEDENT
 
-test: or_test [('if'|'if_cn') or_test ('else'|'else_cn') test] | lambdef
+test: or_test [('if'|如) or_test ('else'|另) test] | lambdef
 test_nocond: or_test | lambdef_nocond
-lambdef: ('lambda'|'lambda_cn') [varargslist] ':' test
-lambdef_nocond: ('lambda'|'lambda_cn') [varargslist] ':' test_nocond
-or_test: and_test (('or'|'or_cn') and_test)*
-and_test: not_test (('and'|'and_cn') not_test)*
-not_test: ('not'|'not_cn') not_test | comparison
+lambdef: ('lambda'|入) [varargslist] ':' test
+lambdef_nocond: ('lambda'|入) [varargslist] ':' test_nocond
+or_test: and_test (('or'|或) and_test)*
+and_test: not_test (('and'|与) not_test)*
+not_test: ('not'|非) not_test | comparison
 comparison: expr (comp_op expr)*
 # <> isn't actually a valid comparison operator in Python. It's here for the
 # sake of a __future__ import described in PEP 401 (which really works :-)
-comp_op: '<'|'>'|'=='|'>='|'<='|'<>'|'!='|('in'|'in_cn')|('not' 'in'|'not_in_cn')|('is'|'is_cn')|('is' 'not'|'is_not_cn')
+comp_op: '<'|'>'|'=='|'>='|'<='|'<>'|'!='|('in'|在)|('not' 'in'|不在)|('is'|为)|('is' 'not'|不为)
 star_expr: '*' expr
 expr: xor_expr ('|' xor_expr)*
 xor_expr: and_expr ('^' and_expr)*
@@ -103,11 +104,11 @@ arith_expr: term (('+'|'-') term)*
 term: factor (('*'|'@'|'/'|'%'|'//') factor)*
 factor: ('+'|'-'|'~') factor | power
 power: atom_expr ['**' factor]
-atom_expr: [('await'|'await_cn')] atom trailer*
+atom_expr: [('await'|等)] atom trailer*
 atom: ('(' [yield_expr|testlist_comp] ')' |
        '[' [testlist_comp] ']' |
        '{' [dictorsetmaker] '}' |
-       NAME | NUMBER | STRING+ | '...' | ('None'|'None_cn') | ('True'|'True_cn') | ('False'|'False_cn'))
+       NAME | NUMBER | STRING+ | '...' | ('None'|无) | ('True'|真) | ('False'|假))
 testlist_comp: (test|star_expr) ( comp_for | (',' (test|star_expr))* [','] )
 trailer: '(' [arglist] ')' | '[' subscriptlist ']' | '.' NAME
 subscriptlist: subscript (',' subscript)* [',']
@@ -120,7 +121,7 @@ dictorsetmaker: ( ((test ':' test | '**' expr)
                   ((test | star_expr)
                    (comp_for | (',' (test | star_expr))* [','])) )
 
-classdef: ('class'|'class_cn') NAME ['(' [arglist] ')'] ':' suite
+classdef: ('class'|类) NAME ['(' [arglist] ')'] ':' suite
 
 arglist: argument (',' argument)*  [',']
 
@@ -139,12 +140,12 @@ argument: ( test [comp_for] |
             '*' test )
 
 comp_iter: comp_for | comp_if
-sync_comp_for: ('for'|'for_cn') exprlist ('in'|'in_cn') or_test [comp_iter]
-comp_for: [('async'|'async_cn')] sync_comp_for
-comp_if: ('if'|'if_cn') test_nocond [comp_iter]
+sync_comp_for: ('for'|凡) exprlist ('in'|在) or_test [comp_iter]
+comp_for: [('async'|异步)] sync_comp_for
+comp_if: ('if'|如) test_nocond [comp_iter]
 
 # not used in grammar, but may appear in "node" passed from Parser to Compiler
 encoding_decl: NAME
 
-yield_expr: ('yield'|'yield_cn') [yield_arg]
-yield_arg: ('from'|'from_cn') test | testlist
+yield_expr: ('yield'|降) [yield_arg]
+yield_arg: ('from'|从) test | testlist
