@@ -2113,9 +2113,15 @@ ast_for_atom(struct compiling *c, const node *n)
         if (len >= 4 && len <= 5) {
             if (!strcmp(s, "None"))
                 return NameConstant(Py_None, LINENO(n), n->n_col_offset, c->c_arena);
+            if (!strcmp(s, "无"))
+                return NameConstant(Py_None, LINENO(n), n->n_col_offset, c->c_arena);
             if (!strcmp(s, "True"))
                 return NameConstant(Py_True, LINENO(n), n->n_col_offset, c->c_arena);
+            if (!strcmp(s, "真"))
+                return NameConstant(Py_True, LINENO(n), n->n_col_offset, c->c_arena);
             if (!strcmp(s, "False"))
+                return NameConstant(Py_False, LINENO(n), n->n_col_offset, c->c_arena);
+            if (!strcmp(s, "假"))
                 return NameConstant(Py_False, LINENO(n), n->n_col_offset, c->c_arena);
         }
         name = new_identifier(s, c);
