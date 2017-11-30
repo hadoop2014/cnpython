@@ -129,6 +129,10 @@ static char *Until_fields[]={
     "body",
     "orelse",
 };
+static PyTypeObject *Loop_type;
+static char *Loop_fields[]={
+    "body",
+};
 static PyTypeObject *If_type;
 static char *If_fields[]={
     "test",
@@ -910,6 +914,8 @@ static int init_types(void)
     if (!While_type) return 0;
     Until_type = make_type("Until", stmt_type, Until_fields, 3);
     if (!Until_type) return 0;
+    Loop_type = make_type("Loop", stmt_type, Loop_fields, 1);
+    if (!Loop_type) return 0;
     If_type = make_type("If", stmt_type, If_fields, 3);
     if (!If_type) return 0;
     With_type = make_type("With", stmt_type, With_fields, 2);
@@ -1564,6 +1570,20 @@ Until(expr_ty test, asdl_seq * body, asdl_seq * orelse, int lineno, int
     p->v.Until.test = test;
     p->v.Until.body = body;
     p->v.Until.orelse = orelse;
+    p->lineno = lineno;
+    p->col_offset = col_offset;
+    return p;
+}
+
+stmt_ty
+Loop(asdl_seq * body, int lineno, int col_offset, PyArena *arena)
+{
+    stmt_ty p;
+    p = (stmt_ty)PyArena_Malloc(arena, sizeof(*p));
+    if (!p)
+        return NULL;
+    p->kind = Loop_kind;
+    p->v.Loop.body = body;
     p->lineno = lineno;
     p->col_offset = col_offset;
     return p;
@@ -2952,6 +2972,15 @@ ast2obj_stmt(void* _o)
         value = ast2obj_list(o->v.Until.orelse, ast2obj_stmt);
         if (!value) goto failed;
         if (_PyObject_SetAttrId(result, &PyId_orelse, value) == -1)
+            goto failed;
+        Py_DECREF(value);
+        break;
+    case Loop_kind:
+        result = PyType_GenericNew(Loop_type, NULL, NULL);
+        if (!result) goto failed;
+        value = ast2obj_list(o->v.Loop.body, ast2obj_stmt);
+        if (!value) goto failed;
+        if (_PyObject_SetAttrId(result, &PyId_body, value) == -1)
             goto failed;
         Py_DECREF(value);
         break;
@@ -5174,6 +5203,45 @@ obj2ast_stmt(PyObject* obj, stmt_ty* out, PyArena* arena)
             return 1;
         }
         *out = Until(test, body, orelse, lineno, col_offset, arena);
+        if (*out == NULL) goto failed;
+        return 0;
+    }
+    isinstance = PyObject_IsInstance(obj, (PyObject*)Loop_type);
+    if (isinstance == -1) {
+        return 1;
+    }
+    if (isinstance) {
+        asdl_seq* body;
+
+        if (_PyObject_HasAttrId(obj, &PyId_body)) {
+            int res;
+            Py_ssize_t len;
+            Py_ssize_t i;
+            tmp = _PyObject_GetAttrId(obj, &PyId_body);
+            if (tmp == NULL) goto failed;
+            if (!PyList_Check(tmp)) {
+                PyErr_Format(PyExc_TypeError, "Loop field \"body\" must be a list, not a %.200s", tmp->ob_type->tp_name);
+                goto failed;
+            }
+            len = PyList_GET_SIZE(tmp);
+            body = _Py_asdl_seq_new(len, arena);
+            if (body == NULL) goto failed;
+            for (i = 0; i < len; i++) {
+                stmt_ty val;
+                res = obj2ast_stmt(PyList_GET_ITEM(tmp, i), &val, arena);
+                if (res != 0) goto failed;
+                if (len != PyList_GET_SIZE(tmp)) {
+                    PyErr_SetString(PyExc_RuntimeError, "Loop field \"body\" changed size during iteration");
+                    goto failed;
+                }
+                asdl_seq_SET(body, i, val);
+            }
+            Py_CLEAR(tmp);
+        } else {
+            PyErr_SetString(PyExc_TypeError, "required field \"body\" missing from Loop");
+            return 1;
+        }
+        *out = Loop(body, lineno, col_offset, arena);
         if (*out == NULL) goto failed;
         return 0;
     }
@@ -8084,6 +8152,7 @@ PyInit__ast(void)
         NULL;
     if (PyDict_SetItemString(d, "Until", (PyObject*)Until_type) < 0) return
         NULL;
+    if (PyDict_SetItemString(d, "Loop", (PyObject*)Loop_type) < 0) return NULL;
     if (PyDict_SetItemString(d, "If", (PyObject*)If_type) < 0) return NULL;
     if (PyDict_SetItemString(d, "With", (PyObject*)With_type) < 0) return NULL;
     if (PyDict_SetItemString(d, "AsyncWith", (PyObject*)AsyncWith_type) < 0)

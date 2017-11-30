@@ -67,11 +67,12 @@ global_stmt: ('global'|全局) NAME (',' NAME)*
 nonlocal_stmt: ('nonlocal'|非局部) NAME (',' NAME)*
 assert_stmt: ('assert'|断言) test [',' test]
 
-compound_stmt: if_stmt | while_stmt | until_stmt | for_stmt | try_stmt | with_stmt | funcdef | classdef | decorated | async_stmt
+compound_stmt: if_stmt | while_stmt | until_stmt | loop_stmt | for_stmt | try_stmt | with_stmt | funcdef | classdef | decorated | async_stmt
 async_stmt: ('async'|异步) (funcdef | with_stmt | for_stmt)
 if_stmt: ('if'|如) test ':' suite (('elif'|另如) test ':' suite)* [('else'|另) ':' suite]
 while_stmt: ('while'|当) test ':' suite [('else'|另) ':' suite]
 until_stmt: ('until'|到) test ':' suite [('else'|另) ':' suite]
+loop_stmt: ('loop'|环) ':' suite
 for_stmt: ('for'|凡) exprlist ('in'|在) testlist ':' suite [('else'|另) ':' suite]
 try_stmt: (('try'|试) ':' suite
            ((except_clause ':' suite)+

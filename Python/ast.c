@@ -431,6 +431,8 @@ validate_stmt(stmt_ty stmt)
         return validate_expr(stmt->v.Until.test, Load) &&
             validate_body(stmt->v.Until.body, "Until", 0) &&
             validate_stmts(stmt->v.Until.orelse);
+    case Loop_kind:
+        return validate_body(stmt->v.Loop.body, "Loop", 0);
     case If_kind:
         return validate_expr(stmt->v.If.test, Load) &&
             validate_body(stmt->v.If.body, "If", 0) &&
@@ -3771,6 +3773,27 @@ ast_for_until_stmt(struct compiling *c, const node *n)
 }
 
 static stmt_ty
+ast_for_loop_stmt(struct compiling *c, const node *n)
+{
+    /* loop_stmt: 'loop' ':' suite */
+    REQ(n, loop_stmt);
+
+    if (NCH(n) == 3) {
+        asdl_seq *suite_seq;
+
+        suite_seq = ast_for_suite(c, CHILD(n, 2));
+        if (!suite_seq)
+            return NULL;
+        return Loop(suite_seq, LINENO(n), n->n_col_offset, c->c_arena);
+    }
+
+    PyErr_Format(PyExc_SystemError,
+                 "wrong number of tokens for 'loop' statement: %d",
+                 NCH(n));
+    return NULL;
+}
+
+static stmt_ty
 ast_for_for_stmt(struct compiling *c, const node *n, int is_async)
 {
     asdl_seq *_target, *seq = NULL, *suite_seq;
@@ -4104,6 +4127,8 @@ ast_for_stmt(struct compiling *c, const node *n)
                 return ast_for_while_stmt(c, ch);
             case until_stmt:
                 return ast_for_until_stmt(c, ch);
+            case loop_stmt:
+                return ast_for_loop_stmt(c, ch);
             case for_stmt:
                 return ast_for_for_stmt(c, ch, 0);
             case try_stmt:
